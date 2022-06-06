@@ -1,4 +1,20 @@
-package com.example.main;
+package com.example.main
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
 public class mainactivity extends AppCompatActivity {
 
     TextView textTime,textTemp;
