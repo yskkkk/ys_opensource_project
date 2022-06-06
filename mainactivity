@@ -1,0 +1,61 @@
+package com.example.main;
+public class mainactivity extends AppCompatActivity {
+
+    TextView textTime,textTemp;
+
+    String url = "https://weather.naver.com/today";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        Button btn1 = findViewById(R.id.btn_shuttle); // 셔틀버스 버튼
+        Button btn2 = findViewById(R.id.btn_tonghak); // 통학버스 버튼
+        Button btn3 = findViewById(R.id.btn_call);    // 콜벤버튼
+
+        textTime =  findViewById(R.id.text_Time); // 시간 웹 크롤링
+        textTemp = findViewById(R.id.text_Temp);  // 위치 온도 웹 크롤링
+
+        (new Thread(() -> {
+            while(!Thread.interrupted())
+                try {
+                    Thread.sleep(300);
+                    Document doc = Jsoup.connect(url).get();
+                    Elements temp = doc.select(".current");
+                    Elements location = doc.select(".location_name");
+                    Elements ultraviolet_ray = doc.select(".level5_4");
+
+
+                    String temp_val = temp.get(0).text().substring(5);
+                    String location_val = location.get(0).text();
+                    String ultraviolet_ray_val = ultraviolet_ray.get(0).text();
+                    runOnUiThread(() -> {
+                        textTime.setText(getCurrentTime());
+                        textTemp.setText(location_val+"\n\t온도 : "+temp_val+"\n\t자외선 :  "+ ultraviolet_ray_val);
+                    });
+                }catch(InterruptedException | IOException e) {
+                    textTime.setText("인터넷에 연결되어있지 않습니다.");
+
+                }
+        })).start();
+
+
+        btn1.setOnClickListener(view -> showShuttledialog());
+        btn2.setOnClickListener(v -> {
+        });
+        
+        btn3.setOnClickListener(v -> {
+        });
+
+    }
+
+    public String getCurrentTime(){
+
+        long now = System.currentTimeMillis();
+        Date mDate = new Date(now);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy년 MM월 dd일 \nhh시 mm분 ss초");
+        return simpleDate.format(mDate);
+    }
+
+}
