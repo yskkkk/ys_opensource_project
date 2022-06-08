@@ -17,6 +17,7 @@ import java.util.Date;
 
 public class mainactivity extends AppCompatActivity {
 
+    Dialog Shuttledialog;
     TextView textTime,textTemp;
 
     String url = "https://weather.naver.com/today";
@@ -25,6 +26,11 @@ public class mainactivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        Shuttledialog = new Dialog(mainactivity.this);
+        Shuttledialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        Shuttledialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Shuttledialog.setContentView(R.layout.activity_main_shuttle_popup); // main_shuttle_popup 팝업창
 
         Button btn1 = findViewById(R.id.btn_shuttle); // 셔틀버스 버튼
         Button btn2 = findViewById(R.id.btn_tonghak); // 통학버스 버튼
@@ -72,6 +78,33 @@ public class mainactivity extends AppCompatActivity {
         Date mDate = new Date(now);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy년 MM월 dd일 \nhh시 mm분 ss초");
         return simpleDate.format(mDate);
+    }
+     public void showShuttledialog(){
+        Shuttledialog.show();
+
+        Button btn_wd = Shuttledialog.findViewById(R.id.btn_weekday);
+        Button btn_we = Shuttledialog.findViewById(R.id.btn_weekend);
+        Button btn_ho = Shuttledialog.findViewById(R.id.btn_holiday);
+
+        btn_wd.setOnClickListener(view -> {
+            Intent it = new Intent(mainactivity.this, shuttle_boarding_point.class);
+            it.putExtra("text","평일");
+            startActivity(it);
+            Shuttledialog.dismiss();
+        });
+        btn_we.setOnClickListener(view -> {
+            Intent it = new Intent(mainactivity.this, shuttle_boarding_point.class);
+            it.putExtra("text","공휴일");
+            startActivity(it);
+            Shuttledialog.dismiss();
+        });
+        btn_ho.setOnClickListener(view -> {
+            Intent it = new Intent(mainactivity.this, shuttle_boarding_point.class);
+            it.putExtra("text","일요일");
+            startActivity(it);
+            Shuttledialog.dismiss();
+        });
+        // 버튼 클릭 시 동작 기능
     }
 
 }
