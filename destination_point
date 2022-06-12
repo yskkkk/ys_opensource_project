@@ -1,4 +1,3 @@
-
 package com.example.main;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -70,5 +69,115 @@ public class shuttle_destination_point extends AppCompatActivity {
         });
     }
 
-  
+    public void showTimeSearchDialog() { // 팝업창
+        TimeSearchDialog.show();
+        long now = System.currentTimeMillis();
+        Date hDate = new Date(now);
+        Date mDate = new Date(now);
+        SimpleDateFormat hour = new SimpleDateFormat("HH");
+        SimpleDateFormat min = new SimpleDateFormat("mm"); // 팝업에서 현재시간을 바로 입력하기 위한 작업
+
+        String getHour = hour.format(hDate);
+        String getMin = min.format(mDate);
+        String swap_Min = "0"; // 분의 앞자리가 없을 때 0을 붙이기 위한 변수
+        ImageView btn_plus_hour = TimeSearchDialog.findViewById(R.id.btn_Plus_Hour);
+        ImageView btn_minus_hour = TimeSearchDialog.findViewById(R.id.btn_Minus_Hour);
+        ImageView btn_plus_min = TimeSearchDialog.findViewById(R.id.btn_Plus_Min);
+        ImageView btn_minus_min = TimeSearchDialog.findViewById(R.id.btn_Minus_Min); // 팝업의 버튼 정의
+
+        Button btn_cancle = TimeSearchDialog.findViewById(R.id.btn_cancle);
+        Button btn_check = TimeSearchDialog.findViewById(R.id.btn_check); // 확인 취소 버튼
+
+        EditText text_Hour = TimeSearchDialog.findViewById(R.id.text_hour);
+        EditText text_Min = TimeSearchDialog.findViewById(R.id.text_min); // 시간, 분 텍스트
+
+        text_Hour.setText(getHour);
+        text_Min.setText(getMin);
+
+            btn_plus_hour.setOnClickListener(view -> {
+                text_Hour.setText(String.valueOf(Integer.parseInt(text_Hour.getText().toString()) + 1));
+            }); //시간 증가 버튼
+
+            btn_plus_min.setOnClickListener(view -> {
+                text_Min.setText(String.valueOf(Integer.parseInt(text_Min.getText().toString()) + 1));
+            });//분 증가 버튼
+
+            btn_minus_hour.setOnClickListener(view -> {
+                text_Hour.setText(String.valueOf(Integer.parseInt(text_Hour.getText().toString()) - 1));
+            });//시간 감소 버튼
+
+            btn_minus_min.setOnClickListener(view -> {
+                text_Min.setText(String.valueOf(Integer.parseInt(text_Min.getText().toString()) - 1));
+            });//분 감소 버튼
+
+            btn_cancle.setOnClickListener(view -> {
+                TimeSearchDialog.dismiss();
+            });// 취소 버튼
+
+            btn_check.setOnClickListener(view -> {
+                Intent it = new Intent(shuttle_destination_point.this, shuttle_boarding_destination_result.class);
+                it.putExtra("text", page_value + "///" + text_Hour.getText() + text_Min.getText());
+                startActivity(it);
+                page_value = maintain_value;
+                TimeSearchDialog.dismiss();
+            }); // 확인 버튼
+
+        text_Hour.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(text_Hour.getText().toString().getBytes().length==1) // 1의 자릿수 일 때 앞에 0을 붙임
+                {
+                    text_Hour.setText(swap_Min+text_Hour.getText().toString());
+                }
+                if(Integer.parseInt(text_Hour.getText().toString()) > 23)
+            {
+                text_Hour.setText("0");
+            }else if(Integer.parseInt(text_Hour.getText().toString()) < 0)
+            {
+                text_Hour.setText("23");
+            }else if(text_Hour.getText().toString().equals(""))
+            {
+                text_Hour.setText("0");
+            }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        }); // 시간의 입력 값 범위 0~23 제한
+
+        text_Min.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(text_Min.getText().toString().getBytes().length==1) // 1의 자릿수 일 때 앞에 0을 붙임
+                {
+                    text_Min.setText(swap_Min+text_Min.getText().toString());
+                }
+                if(Integer.parseInt(text_Min.getText().toString()) > 59)
+                {
+                    text_Hour.setText(String.valueOf(Integer.parseInt(text_Hour.getText().toString()) + 1));
+                    text_Min.setText("0");
+                }else if(Integer.parseInt(text_Min.getText().toString()) < 0)
+                {
+                    text_Hour.setText(String.valueOf(Integer.parseInt(text_Hour.getText().toString()) - 1));
+                    text_Min.setText("59");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        }); // 분의 입력 값 제한 0~59
+
+
+
+    }
 }
